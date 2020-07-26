@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+
+  mysql:
+    image: mysql:latest
+    volumes: 
+     - ./$PWD/data:/var/lib/mysql/
+    container_name: comicdb
+    environment:
+      MYSQL_USER: briosgame
+      MYSQL_PASSWORD: AEDA286B
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: comic1
+    networks: 
+      - comic
+
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      container_name: admindbcomic
+      links:
+        - mysql
+      environment:
+        PMA_HOST: mysql
+        PMA_PORT: 3306
+        PMA_ARBITRARY: 1
+      restart: always
+      ports:
+        - 8184:80
+
+  wordpress:
+   
+    image: wordpress
+    depends_on: 
+      - mysql
+    container_name: comic
+    restart: unless-stopped
+    ports:
+      - 8140:80    
+    environment:
+      - WORDPRESS_DB_HOST= mysql:3306
+      - WORDPRESS_DB_USER= briosgame
+      - WORDPRESS_DB_PASSWORD= AEDA286B
+      - WORDPRESS_DB_NAME= comic1
+    volumes:
+      - ./$PWD/html:/var/www/html/
+    networks: 
+      - comic   
+      
+      
+networks:
+  comic:
+    external: true
+    name: comic 
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
